@@ -65,7 +65,7 @@ var tooltip = d3.select("body").append("div")
         .attr("r", 3)
 
     tooltip.style("visibility", "visible")
-    		.text([d.fieldRa, d.fieldDec, d.pixId])
+    		.text([d.fieldRa, d.fieldDec, d.pixId, d.starDensity_r25])
   }
 
 var mousemove = function(d){
