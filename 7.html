@@ -2,16 +2,9 @@
 
 <body>
 	<p>Click to select, double click to cancel</p>
-	<select id="coord">
-		<option value="eq"> Equatorial </option>
-		<option value="gal"> Galactic </option>
-	</select>
-
 	<button onclick = "update(nside16)">Nside=16</button>
 	<button onclick="update(nside64)">Nside=64</button>
-
 	<div id="plot"></div>
-	<p>Selected pixId: <p>
 	<div id="info"></div>
 	
 </body>
@@ -24,6 +17,7 @@
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 
 
+
 <script type="text/javascript">
 var margin = {top:50, bottom:50, right:50, left:50};
 var width = 1000 - margin.left - margin.right;
@@ -34,8 +28,7 @@ var svg = d3.select("#plot")
 			.append("svg")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom)
-			//.style("background-color", "rgba(128, 255, 128, 0.1)")
-			.style("background-color", "white")
+			.style("background-color", "rgba(128, 255, 128, 0.1)")
 			.append("g")
 			.attr("transform", "translate("+margin.left+", "+margin.top+")")
 
@@ -68,12 +61,11 @@ var tooltip = d3.select("body").append("div")
  // mouseover function
  var mouseover = function(d) {
 	//console.log( proj( [-d.fieldRa, d.fieldDec] ) )
+
 	  d3.select(this)
-        .style("stroke", "black")
-        .style("stroke-opacity", 1)
+        //.style("stroke", "black")
         //.style("opacity", 1)
-        .attr("r", 2)
-        .style("cursor", "default")
+        .attr("r", 3)
 
     tooltip.style("visibility", "visible")
     		.text([d.fieldRa, d.fieldDec, d.starDensity_r25, d.pixId])
@@ -89,7 +81,6 @@ var mousemove = function(d){
 // mouseleave 
 var mouseleave = function(d){
 	d3.select(this)
-	 .style("stroke", "none")
 	//	.style("opacity", 0.5)
 		.attr("r", 2)
 
@@ -99,10 +90,9 @@ var mouseleave = function(d){
 
 var click = function(d){
 	console.log( [ d.pixId] )
-    //console.log ( proj( [-d.fieldRa, d.fieldDec] ) )
+    console.log ( proj( [-d.fieldRa, d.fieldDec] ) )
 	d3.select(this)
-		.style("stroke", "black")
-		.style("opacity", 0.9)
+		.style("opacity", 0.8)
 
 	arr.push(d.pixId)
 	arr =  Array.from(new Set(arr))
@@ -120,22 +110,21 @@ var dblclick = function(d){
 		arr.splice( idx, 1) }; // remove double clicked pix
 
 	svg2txt.text(arr)
+
 }
 
 // projection
 var proj = d3.geoMollweide().scale(160)
 
+
 var nside16 = "./Fields_nside16.csv"
 var nside64 = "./Fields_nside64.csv"
 
-//get coordinate option
 
 // Add dots
 
 function update(fields){
 arr = []
-svg2txt.text(arr)
-var coord = document.querySelector("#coord").value
 
 // read csv file
 var data = d3.csv(fields).then( function(data){
@@ -150,27 +139,11 @@ svg.selectAll("circle")
   .append("circle")
   .attr("class", "skymap")
     .attr("cx", function (d) { 
-
-    	if (coord=="eq"){   
-    		var projx = proj( [-d.fieldRa, d.fieldDec] )[0];
-    		}
-
-    	else {
-    		var projx = proj( [-d.fieldGl, d.fieldGb] )[0];
-    		xLabel.text("Gl");
-    	}
-
+    	var projx = proj( [-d.fieldRa, d.fieldDec] )[0];
     	var newx = changeMinMax(projx, 25, 930, 0, 360);
     	return   x(newx); } ) 
     .attr("cy", function (d) { 
-
-       if (coord=="eq"){   
-    		var projy = proj( [-d.fieldRa, d.fieldDec] )[1];}
-
-    	else {
-    		var projy = proj( [-d.fieldGl, d.fieldGb] )[1];
-    	    yLabel.text("Gb");}
-
+    	var projy = proj( [-d.fieldRa, d.fieldDec] )[1];
     	var newy = - changeMinMax(projy, 20, 480, -90, 90);
     	return   y( newy ); } ) 
     .attr("r", 2)
@@ -196,25 +169,29 @@ var changeMinMax = function(oldValue, oldMin, oldMax, newMin, newMax){
 	return newValue; 
 }
 	
+
+
 // add label
-var xLabel = svg.append("text")
+svg.append("text")
 	.attr("x", width/2)
 	.attr("y", height + margin.top/2)
 	.text("RA");
 
-var yLabel = svg.append("text")
+svg.append("text")
 	.attr("transform", "rotate(-90)")
 	.attr("y", -margin.left+20)
 	.attr("x", -height/2)
 	.text("DEC")
 
 // text to show selected pix
-svg2txt = d3.select("#info")
-  			.append("textarea")
-  			.attr("rows", 5)
-  			.attr("cols", 120)
-  			.attr("disabled", true)
+svg2 = d3.select("#info")
+  			.append("svg")
+  			.attr("width", 1000)
+  			.attr("height", 100)
   			.style("background-color", "rgba(128, 255, 128, 0.1)")
+svg2txt = svg2.append("text")
+	.attr("x", 100)
+	.attr("y", 50)
 
 var arr = []
 update(nside16)
