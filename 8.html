@@ -2,8 +2,6 @@
 
 <body>
 	<p>Click to select, double click to cancel</p>
-	<button onclick = "update(nside16)">Nside=16</button>
-	<button onclick="update(nside64)">Nside=64</button>
 	<div id="plot"></div>
 	<div id="info"></div>
 	
@@ -15,7 +13,6 @@
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/d3-geo.v1.min.js"></script>
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
 
 
 <script type="text/javascript">
@@ -116,28 +113,18 @@ var dblclick = function(d){
 // projection
 var proj = d3.geoMollweide().scale(160)
 
-
-var nside16 = "./Fields_nside16.csv"
-var nside64 = "./Fields_nside64.csv"
-
-
-// Add dots
-
-function update(fields){
-arr = []
-
 // read csv file
-var data = d3.csv(fields).then( function(data){
+var data = d3.csv("./Fields_nside64.csv").then( function(data){
 
 console.log(data[0])
 console.log(data[0].starDensity_r25)
-var scatter = svg.selectAll("circle").remove(scatter)
 
-svg.selectAll("circle")
+// Add dots
+svg.append('g')
+  .selectAll("dot")
   .data(data)
   .enter()
   .append("circle")
-  .attr("class", "skymap")
     .attr("cx", function (d) { 
     	var projx = proj( [-d.fieldRa, d.fieldDec] )[0];
     	var newx = changeMinMax(projx, 25, 930, 0, 360);
@@ -157,7 +144,6 @@ svg.selectAll("circle")
 
 })
 
-}
 
 var changeMinMax = function(oldValue, oldMin, oldMax, newMin, newMax){
 
@@ -193,8 +179,8 @@ svg2txt = svg2.append("text")
 	.attr("x", 100)
 	.attr("y", 50)
 
-var arr = []
-update(nside16)
+var arr = []  // arr to save selected pixes
 
 </script>
+
 
