@@ -153,7 +153,7 @@ svg.selectAll("circle")
 
     	if (coord=="eq"){   
     		var projx = proj( [-d.fieldRa, d.fieldDec] )[0];
-    		xLabel.text("RA")
+    		xLabel.text("RA");
     		}
 
     	else {
@@ -166,8 +166,8 @@ svg.selectAll("circle")
     .attr("cy", function (d) { 
 
        if (coord=="eq"){   
-    		var projy = proj( [-d.fieldRa, d.fieldDec] )[1];}
-    		yLabel.text("Dec");
+    		var projy = proj( [-d.fieldRa, d.fieldDec] )[1];
+    		yLabel.text("Dec"); }
 
     	else {
     		var projy = proj( [-d.fieldGl, d.fieldGb] )[1];
