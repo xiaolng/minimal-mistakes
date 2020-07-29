@@ -153,6 +153,7 @@ svg.selectAll("circle")
 
     	if (coord=="eq"){   
     		var projx = proj( [-d.fieldRa, d.fieldDec] )[0];
+    		xLabel.text("RA")
     		}
 
     	else {
@@ -166,6 +167,7 @@ svg.selectAll("circle")
 
        if (coord=="eq"){   
     		var projy = proj( [-d.fieldRa, d.fieldDec] )[1];}
+    		yLabel.text("Dec");
 
     	else {
     		var projy = proj( [-d.fieldGl, d.fieldGb] )[1];
@@ -183,7 +185,6 @@ svg.selectAll("circle")
     .on("dblclick", dblclick)
 
 })
-
 }
 
 var changeMinMax = function(oldValue, oldMin, oldMax, newMin, newMax){
